@@ -16,7 +16,7 @@ def sobel_filters(img,to_degrees=True,_range_conversion=True,gradient_quantizati
 
     ## reverse white and black
 
-    G = 255 * np.ones_like(G) - G
+    # G = 255 * np.ones_like(G) - G
 
     ## convert to degrees
     ## theta between -180 and 180 degrees
@@ -62,11 +62,4 @@ def quantization_function(theta):
 def range_conversion(theta):
     ret = theta.copy()
     return (ret + 360) % 360
-
-
-## theta between 0 and 360
-def angle_quantization(theta):
-    for i in range(theta.shape[0]):
-        for j in range(theta.shape[1]):
-            current = theta[i,j]
 

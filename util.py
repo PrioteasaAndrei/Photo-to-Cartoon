@@ -2,6 +2,8 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import random
+from PIL import Image
+import os
 
 def convolution(image, kernel, average=False, verbose=False):
 
@@ -61,7 +63,7 @@ def convolution(image, kernel, average=False, verbose=False):
 # [0.1140,0.5870,0.2989]
 def BGR_2_grayscale(img):
     tmp = img.copy()
-    return np.dot(tmp[...,:3], [0.1140,0.5870,0.2989]).astype(np.uint8)
+    return np.dot(tmp[...,:3], [0.1140,0.5870,0.2989])
 
 
 def show(img,keep=True,tag="Default"):
@@ -71,3 +73,28 @@ def show(img,keep=True,tag="Default"):
     # cv2.destroyAllWindows()
 
 
+def show(imgs,no_of_images=2,tag="default"):
+    to_tuple = tuple(imgs)
+    cv2.imshow(tag,np.concatenate(to_tuple,axis=1))
+    cv2.waitKey(0)
+
+
+def show_plt(img,title="Default"):
+    plt.imshow(img, interpolation='none', cmap='gray')
+    plt.title(title)
+    plt.show()
+
+
+def save_image(img,path,overwrite=False):
+    im = Image.fromarray(img)
+    if im.mode != 'RGB':
+        im = im.convert('RGB')
+
+    if os.path.isfile(path + ".png") and overwrite==False:
+        print("File already exist in directory. Set overwrite flag to True to overwrite it.")
+        return
+    else:
+        im.save(path + ".png")
+        print("Saved file " + path + " to directory.")
+
+    
