@@ -20,6 +20,10 @@ Edgeurile sunt negre la mine
 
 pentru afisarea cu plt trebuie sa convertesti BGR la RGB 
 '''
+
+## set to True to show images
+SHOW_IMAGES = False
+
 def main():
     lena_original = cv2.imread("../img/lena_original.png")
     lena_grayscale = BGR_2_grayscale(lena_original)
@@ -31,7 +35,8 @@ def main():
     second_row = np.concatenate((after_non_max_sup,after_treshold_res,after_edge_tracking,np.ones_like(angle_sobel) * 255),axis=1)
     combined = np.concatenate((first_row,second_row),axis=0)
 
-    show_plt(combined,"First row: Grayscale     Gaussian Blur       Sobel Amplitudes        Sobel quantized angles\nSecond row: Non maximum supression      Threshold hysteresis        Edge tracking")
+    if SHOW_IMAGES:
+        show_plt(combined,"First row: Grayscale     Gaussian Blur       Sobel Amplitudes        Sobel quantized angles\nSecond row: Non maximum supression      Threshold hysteresis        Edge tracking")
 
     save_image(lena_grayscale,"../img/lena_grayscale")
     save_image(lena_blured,"../img/lena_blured")
@@ -41,13 +46,35 @@ def main():
     save_image(after_treshold_res,"../img/tresholding")
     save_image(after_edge_tracking,"../img/edge_tracking")
 
+    color_quant = color_quant_median_wrapper(lena_original,4)
+
+    if SHOW_IMAGES:
+        show_plt(np.concatenate((cv2.cvtColor(lena_original, cv2.COLOR_BGR2RGB),color_quant),axis=1),title="Default vs Color quantized with median cut")
+    
+    save_image(np.concatenate((cv2.cvtColor(lena_original, cv2.COLOR_BGR2RGB),color_quant),axis=1),"../img/lena_vs_quantized")
+
+    lena_median_blur_5 = median_filter(color_quant,5)
+    lena_median_blur_7 = median_filter(color_quant,7)
+
+    if SHOW_IMAGES:
+        show_plt(np.concatenate((color_quant,lena_median_blur_5,lena_median_blur_7),axis=1),title="Color quantized with median cut vs Median filter kernel size=5 vs Median filter kernel size=7")
+    
+    save_image(np.concatenate((color_quant,lena_median_blur_5,lena_median_blur_7),axis=1),"../img/median_filter_0_5_7")
+
+
+    final = combine_img_with_canny(lena_median_blur_5,after_edge_tracking)
+    save_image(final,"../img/combined")
+
+    if SHOW_IMAGES:
+        show_plt(np.concatenate((cv2.cvtColor(lena_original, cv2.COLOR_BGR2RGB),final),axis=1))
+
 def test_k_means():
     lena_original = cv2.imread("../img/lena_original.png")
     color_quant_k_means = color_quantization(lena_original,20)
       # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     show_plt(cv2.cvtColor(color_quant_k_means, cv2.COLOR_BGR2RGB))
 
-def test_k_means_median():
+def test__median_cut():
     lena_original = cv2.imread("../img/lena_original.png")
     color_quant_median_wrapper(lena_original,4)
 
@@ -69,8 +96,8 @@ def test_combine_images():
     show_plt(final)
 
 if __name__ == "__main__":
-    # main()
+    main()
     # test_k_means_median()
-    # test_k_means_median()
+    # test_median_cut()
     # test_median_filter()
-    test_combine_images()
+    # test_combine_images()

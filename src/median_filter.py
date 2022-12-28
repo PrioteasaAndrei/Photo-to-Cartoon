@@ -11,25 +11,18 @@ def median_filter(img,kernel_size=3):
 
     median_red = median_filter_inner(red,kernel_size)
     print("Done red")
-    # print(median_red)
     median_green = median_filter_inner(green,kernel_size)
     print("Done green")
-    # print(median_green)
     median_blue = median_filter_inner(blue,kernel_size)
     print("Done blue")
-    # print(median_blue)
 
     ret = np.dstack((median_red,median_green,median_blue))
-    print(ret.shape)
 
     return ret
 
 def median_filter_inner(img,kernel_size=3):
     out_img = np.zeros_like(img)
 
-    ## ignore padding 
-
-    # print(img.shape)
     image_row, image_col = img.shape
     kernel_row, kernel_col = kernel_size,kernel_size
 

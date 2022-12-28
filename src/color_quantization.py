@@ -60,12 +60,6 @@ def color_quant_median(img,splits=4):
   img_blue = np.stack([np.zeros_like(blue), np.zeros_like(blue),blue], axis=-1)  
   img_green = np.stack([np.zeros_like(green),green, np.zeros_like(green)], axis=-1)  
 
-  # show_plt(img)
-  # show_plt(img_red)
-  # show_plt(img_blue)
-  # show_plt(img_green)
-
-
   max_diff = -1
   max_channel = np.zeros_like(red)
   max_channel_str = 'I'
@@ -87,11 +81,7 @@ def color_quant_median(img,splits=4):
     max_channel = blue
     max_channel_str = 'b'
 
-  
-  # if max_channel == np.zeros_like(red):
-  #   raise Exception()
 
-  print(max_channel_str)
   cv2.waitKey(0)
   ## RGB order
   bucket = [(img[i,j,2],img[i,j,1],img[i,j,0]) for i in range(img.shape[0]) for j in range(img.shape[1])]
@@ -104,20 +94,14 @@ def color_quant_median(img,splits=4):
     bucket = sorted(bucket,key = lambda x: x[2])
 
 
-  # print(list(map(lambda x: x[1],bucket)))
   chunked_np_arrays = np.array_split(np.array(bucket),2 ** splits)
   chunked_array = [list(arr) for arr in chunked_np_arrays]
   chunked_array_means = list(map(get_color_mean,chunked_array))
   chunked_array_means = [x.astype(np.uint8) for x in chunked_array_means]
   ## chunked_array[i][j] = np.array acum
-
-
-  # print(chunked_array_means)
-  # print(chunked_array_means[0].astype(np.uint8))
   
   bitmap = np.zeros_like(img)
 
-  ## bitmap va contine pt ficare pixel indicele bucketului din care face parte 
   for i in range(img.shape[0]):
     for j in range(img.shape[1]):
       current_px = img[i,j]
@@ -152,7 +136,6 @@ def color_quant_median_wrapper(img,splits):
       return
 
     ## acounted for the inverse order
-    print("TYPE",type(bucket))
     red = bucket[:,0]
     green = bucket[:,1]
     blue = bucket[:,2]
