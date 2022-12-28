@@ -188,5 +188,5 @@ def color_quant_median_wrapper(img,splits):
   flattened_img= np.array([[img[i,j,2],img[i,j,1],img[i,j,0],i,j] for i in range(img.shape[0]) for j in range(img.shape[1])])
   color_quant_median_rec(img,flattened_img ,splits)
 
-  show_plt(out_img)
+  # show_plt(out_img)
   return out_img

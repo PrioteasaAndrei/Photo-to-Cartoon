@@ -98,3 +98,15 @@ def save_image(img,path,overwrite=False):
         print("Saved file " + path + " to directory.")
 
     
+
+def combine_img_with_canny(img,img_canny):
+    out_img = np.zeros_like(img)
+
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            if img_canny[i,j] == 0:
+                out_img[i,j] = img[i,j]
+            else:
+                out_img[i,j] = img_canny[i,j] - 255
+
+    return out_img

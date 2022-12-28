@@ -4,6 +4,7 @@ import random
 from sobel import *
 from canny_edge_detector import *
 from color_quantization import *
+from median_filter import *
 
 '''
 Imaginea citita cu cv2.imread e in format BGR
@@ -32,13 +33,13 @@ def main():
 
     show_plt(combined,"First row: Grayscale     Gaussian Blur       Sobel Amplitudes        Sobel quantized angles\nSecond row: Non maximum supression      Threshold hysteresis        Edge tracking")
 
-    save_image(lena_grayscale,"img/lena_grayscale")
-    save_image(lena_blured,"img/lena_blured")
-    save_image(lena_sobel,"img/lena_sobel")
-    save_image(angle_sobel,"img/angle_sobel")
-    save_image(after_non_max_sup,"img/non_max_supression")
-    save_image(after_treshold_res,"img/tresholding")
-    save_image(after_edge_tracking,"img/edge_tracking")
+    save_image(lena_grayscale,"../img/lena_grayscale")
+    save_image(lena_blured,"../img/lena_blured")
+    save_image(lena_sobel,"../img/lena_sobel")
+    save_image(angle_sobel,"../img/angle_sobel")
+    save_image(after_non_max_sup,"../img/non_max_supression")
+    save_image(after_treshold_res,"../img/tresholding")
+    save_image(after_edge_tracking,"../img/edge_tracking")
 
 def test_k_means():
     lena_original = cv2.imread("../img/lena_original.png")
@@ -49,8 +50,27 @@ def test_k_means():
 def test_k_means_median():
     lena_original = cv2.imread("../img/lena_original.png")
     color_quant_median_wrapper(lena_original,4)
+
+def test_median_filter():
+    lena_original = cv2.imread("../img/lena_original.png")
+    lena_color_quant = color_quant_median_wrapper(lena_original,4)
+    # show_plt(lena_color_quant)
+    save_image(np.concatenate((lena_color_quant, median_filter(lena_color_quant,kernel_size=5), median_filter(lena_color_quant,kernel_size=7)),axis=1),"../img/median_filter_0_5_7")
     
+
+def test_combine_images():
+    lena_original = cv2.imread("../img/lena_original.png")
+    lena_color_quant = color_quant_median_wrapper(lena_original,4)
+    lena_median = median_filter(lena_color_quant,kernel_size=5)
+    after_non_max_sup,after_treshold_res,after_edge_tracking = canny_edge_detector(lena_original)
+
+    final = combine_img_with_canny(lena_median,after_edge_tracking)
+    save_image(final,"../img/combined")
+    show_plt(final)
+
 if __name__ == "__main__":
     # main()
     # test_k_means_median()
-    test_k_means_median()
+    # test_k_means_median()
+    # test_median_filter()
+    test_combine_images()
